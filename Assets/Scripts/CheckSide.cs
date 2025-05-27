@@ -1,40 +1,41 @@
+using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CheckSide : MonoBehaviour
 {
-    private static bool triggered = false;
+    [HideInInspector] public static bool triggered = false;
 
     private void OnTriggerEnter(Collider col)
     {
         if (triggered) return;
-        
-        Debug.Log($"Triggered: {gameObject.name}, velocity: {Dice.diceVelocity.magnitude}");
-        
-        // if (Dice.diceVelocity.sqrMagnitude > 0.01f) return;
-        if (col.name != "Plane") return;
-        
-        switch (gameObject.name)
+
+        if (Dice.instance.rolledTime<1.5f)
         {
-            case "1":
-                Debug.Log(6);
-                break;
-            case "2": 
-                Debug.Log(5);
-                break;
-            case "3":
-                Debug.Log(4);
-                break; 
-            case "4":
-                Debug.Log(3);
-                break;
-            case "5":
-                Debug.Log(2);
-                break;
-            case "6":
-                Debug.Log(1);
-                break;
+            Debug.Log($"Triggered: {gameObject.name}, velocity: {Dice.diceVelocity.magnitude}");
+
+            UniTask.WaitUntil(() => !Dice.instance.isTimerOn);
+
+            switch (gameObject.name)
+            {
+                case "1": DiceResult.resultInstance.result = 6;
+                    break;
+                case "2": DiceResult.resultInstance.result = 5;
+                    break;
+                case "3": DiceResult.resultInstance.result = 4;
+                    break;
+                case "4": DiceResult.resultInstance.result = 3;
+                    break;
+                case "5": DiceResult.resultInstance.result = 2;
+                    break;
+                case "6": DiceResult.resultInstance.result = 1;
+                    break;
+            }
         }
         
+        // if (Dice.diceVelocity.sqrMagnitude > 0.01f) return;
+        // if (Dice.instance.dice.GetComponent<Transform>().position.y > 0.4566893f) return;
+        // if (col.name != "Plane") return;
         
         triggered = true;
     }

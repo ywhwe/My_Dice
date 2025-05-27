@@ -7,10 +7,19 @@ public class Dice : MonoBehaviour
 {
     static Rigidbody rb;
     public static Vector3 diceVelocity;
+    
+    [HideInInspector] public float rolledTime = 0f;
+    [HideInInspector] public bool isTimerOn = false;
 
     private int[] angles = { 0, 90, 180, 270, 360 };
 
-    [SerializeField] private Object dice;
+    public Object dice;
+    public static Dice instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
@@ -30,6 +39,8 @@ public class Dice : MonoBehaviour
 
     public void DiceRoll()
     {
+        rolledTime = 0;
+        if (!isTimerOn) StartCoroutine(RollTime());
         CheckSide.ResetTrigger();
         
         float dirX = Random.Range(0, 3000);
@@ -48,6 +59,15 @@ public class Dice : MonoBehaviour
         float forceRand = Random.Range(200, 300);
         rb.AddForce(Vector3.up * forceRand);
         rb.AddTorque(new Vector3(dirX, dirY, dirZ), ForceMode.VelocityChange);
+    }
+
+    private IEnumerator RollTime()
+    {
+        isTimerOn = true;
+        yield return null;
+        
+        rolledTime += Time.deltaTime;
+        Debug.Log("rolledTime: " + rolledTime);
     }
 
     public void Exit()
