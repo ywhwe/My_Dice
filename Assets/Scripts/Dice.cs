@@ -9,7 +9,7 @@ public class Dice : MonoBehaviour
     public static Vector3 diceVelocity;
     
     [HideInInspector] public float rolledTime = 0f;
-    [HideInInspector] public bool isTimerOn = false;
+    [HideInInspector] public bool isTimerOn;
 
     private int[] angles = { 0, 90, 180, 270, 360 };
 
@@ -24,6 +24,7 @@ public class Dice : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        isTimerOn = false;
         StartCoroutine(CheckButton());
     }
 
@@ -40,7 +41,13 @@ public class Dice : MonoBehaviour
     public void DiceRoll()
     {
         rolledTime = 0;
-        if (!isTimerOn) StartCoroutine(RollTime());
+        if (isTimerOn)
+        {
+            StopCoroutine(RollTime());
+            isTimerOn = false;
+        }
+        StartCoroutine(RollTime());
+        
         CheckSide.ResetTrigger();
         
         float dirX = Random.Range(0, 3000);

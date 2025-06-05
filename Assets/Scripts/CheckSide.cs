@@ -10,7 +10,7 @@ public class CheckSide : MonoBehaviour
     {
         if (triggered) return;
 
-        if (Dice.instance.rolledTime<1.5f)
+        if (Dice.instance.rolledTime<0.5f)
         {
             Debug.Log($"Triggered: {gameObject.name}, velocity: {Dice.diceVelocity.magnitude}");
 
